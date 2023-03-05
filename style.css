@@ -1,0 +1,142 @@
+.sprite-num {
+  image-rendering: pixelated;
+  width: 48px;
+  height: 88px;
+  background-size: 552px 332px;
+  background-image: url(minesweeper-sprites.png);
+}
+
+.sprite-num__1 {
+  background-position: 0 0;
+}
+.sprite-num__2 {
+  background-position: -56px 0;
+}
+.sprite-num__3 {
+  background-position: -112px 0;
+}
+.sprite-num__4 {
+  background-position: -168px 0;
+}
+.sprite-num__5 {
+  background-position: -224px 0;
+}
+.sprite-num__6 {
+  background-position: -280px 0;
+}
+.sprite-num__7 {
+  background-position: -336px 0;
+}
+.sprite-num__8 {
+  background-position: -392px 0;
+}
+.sprite-num__9 {
+  background-position: -448px 0;
+}
+.sprite-num__0 {
+  background-position: -504px 0;
+}
+
+.sprite-smile {
+  image-rendering: pixelated;
+  width: 100px;
+  height: 100px;
+  background-size: 552px 332px;
+  background-image: url(minesweeper-sprites.png);
+}
+
+.sprite-smile__def {
+  background-position: 0 -96px;
+}
+.sprite-smile__pressed {
+  background-position: -108px -96px;
+}
+.sprite-smile__wait {
+  background-position: -216px -96px;
+}
+.sprite-smile__win {
+  background-position: -324px -96px;
+}
+.sprite-smile__lose {
+  background-position: -432px -96px;
+}
+
+.sprite-field {
+  image-rendering: pixelated;
+  width: 60px;
+  height: 60px;
+  background-size: 552px 332px;
+  background-image: url(minesweeper-sprites.png);
+}
+
+.sprite-field__def {
+  background-position: 0 -204px;
+}
+.sprite-field__empty {
+  background-position: -68px -204px;
+}
+.sprite-field__flag {
+  background-position: -136px -204px;
+}
+.sprite-field__question {
+  background-position: -204px -204px;
+}
+.sprite-field__question_pressed {
+  background-position: -272px -204px;
+}
+.sprite-field__mine {
+  background-position: -340px -204px;
+}
+.sprite-field__mine_pressed {
+  background-position: -408px -204px;
+}
+.sprite-field__mine_defected {
+  background-position: -476px -204px;
+}
+
+.sprite-field__1 {
+  background-position: 0 -272px;
+}
+.sprite-field__2 {
+  background-position: -68px -272px;
+}
+.sprite-field__3 {
+  background-position: -136px -272px;
+}
+.sprite-field__4 {
+  background-position: -204px -272px;
+}
+.sprite-field__5 {
+  background-position: -272px -272px;
+}
+.sprite-field__6 {
+  background-position: -340px -272px;
+}
+.sprite-field__7 {
+  background-position: -408px -272px;
+}
+.sprite-field__8 {
+  background-position: -476px -272px;
+}
+
+/*  */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.panel {
+  min-width: 960px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.scoreboard {
+  display: flex;
+}
+
+.row {
+  display: flex;
+}
