@@ -2,11 +2,18 @@ const container = document.querySelector(".container");
 const panel = document.querySelector(".panel");
 const smile = document.querySelector(".sprite-smile");
 
+const closeCellClasses = [
+  "sprite-field__def",
+  "sprite-field__question",
+  "sprite-field__flag",
+];
+
 let field = [];
 let bombs = [];
 let counter = 40;
 let closedCells = 216;
 let time = 0;
+let game = false;
 
 function drawField() {
   let field = document.createElement("div");
@@ -82,17 +89,73 @@ function drawTimer() {
   panel.append(timerEl);
 }
 
+function drawAllBombs() {
+  for (let k = 0; k < 40; k++) {
+    const i = Math.floor(bombs[k] / 16);
+    const j = bombs[k] % 16;
+    let el = document.querySelector(`.cell[i='${i}'][j='${j}']`);
+    if (
+      el.classList.contains("sprite-field__def") ||
+      el.classList.contains("sprite-field__question")
+    ) {
+      el.classList.remove("sprite-field__def");
+      el.classList.remove("sprite-field__question");
+      el.classList.add("sprite-field__mine");
+    } else if (el.classList.contains("sprite-field__flag")) {
+      el.classList.remove("sprite-field__flag");
+      el.classList.add("sprite-field__mine_defected");
+    }
+  }
+
+  smile.classList.remove("sprite-smile__def");
+  smile.classList.add("sprite-smile__lose");
+}
+
+function hasNeighbourBomb(i, j) {
+  return field[i][j] > 0;
+}
+
+function openCell(cell) {
+  if (closeCellClasses.some((el) => cell.classList.contains(el))) {
+    cell.classList.remove("sprite-field__def");
+    cell.classList.remove("sprite-field__question");
+    if (cell.classList.contains("sprite-field__flag")) {
+      cell.classList.remove("sprite-field__flag");
+      counter += 1;
+      if (counter > 40) {
+        counter = 40;
+      }
+      drawCounter();
+    }
+    let i = parseInt(cell.getAttribute("i"));
+    let j = parseInt(cell.getAttribute("j"));
+    if (field[i][j] >= 9) {
+      cell.classList.add("sprite-field__mine_pressed");
+      return;
+    } else if (field[i][j] == 0) {
+      cell.classList.add(`sprite-field__empty`);
+    } else {
+      cell.classList.add(`sprite-field__${field[i][j]}`);
+    }
+
+    closedCells -= 1;
+
+    if (!hasNeighbourBomb(i, j)) {
+      for (let k = i - 1; k < i + 2; k++) {
+        for (let m = j - 1; m < j + 2; m++) {
+          if (k >= 0 && k <= 15 && m >= 0 && m <= 15) {
+            let el = document.querySelector(`.cell[i='${k}'][j='${m}']`);
+            openCell(el);
+          }
+        }
+      }
+    }
+  }
+}
+
 drawField();
 drawCounter();
 drawTimer();
-
-const closeCellClasses = [
-  "sprite-field__def",
-  "sprite-field__question",
-  "sprite-field__flag",
-];
-
-let game = false;
 
 // Перезапуск игры
 smile.addEventListener("click", function (e) {
@@ -126,7 +189,7 @@ container.addEventListener("click", function (e) {
 
   if (clicked.classList.contains("sprite-field__mine_pressed")) {
     stopTimer();
-    showAllBombs();
+    drawAllBombs();
   } else if (closedCells == 0) {
     stopTimer();
     smile.classList.remove("sprite-smile__def");
@@ -186,77 +249,6 @@ function changeSmileOnCellClick(e) {
 container.addEventListener("mousedown", changeSmileOnCellClick);
 container.addEventListener("mouseup", changeSmileOnCellClick);
 
-function hasNeighbourBomb(i, j) {
-  return field[i][j] > 0;
-}
-
-function openCell(cell) {
-  if (closeCellClasses.some((el) => cell.classList.contains(el))) {
-    cell.classList.remove("sprite-field__def");
-    cell.classList.remove("sprite-field__question");
-    if (cell.classList.contains("sprite-field__flag")) {
-      cell.classList.remove("sprite-field__flag");
-      counter += 1;
-      if (counter > 40) {
-        counter = 40;
-      }
-      drawCounter();
-    }
-    let i = parseInt(cell.getAttribute("i"));
-    let j = parseInt(cell.getAttribute("j"));
-    if (field[i][j] >= 9) {
-      cell.classList.add("sprite-field__mine_pressed");
-      return;
-    } else if (field[i][j] == 0) {
-      cell.classList.add(`sprite-field__empty`);
-    } else {
-      cell.classList.add(`sprite-field__${field[i][j]}`);
-    }
-
-    closedCells -= 1;
-
-    if (!hasNeighbourBomb(i, j)) {
-      for (let k = i - 1; k < i + 2; k++) {
-        for (let m = j - 1; m < j + 2; m++) {
-          if (k >= 0 && k <= 15 && m >= 0 && m <= 15) {
-            let el = document.querySelector(`.cell[i='${k}'][j='${m}']`);
-            openCell(el);
-          }
-        }
-      }
-    }
-  }
-}
-
-function showAllBombs() {
-  for (let k = 0; k < 40; k++) {
-    const i = Math.floor(bombs[k] / 16);
-    const j = bombs[k] % 16;
-    let el = document.querySelector(`.cell[i='${i}'][j='${j}']`);
-    if (
-      el.classList.contains("sprite-field__def") ||
-      el.classList.contains("sprite-field__question")
-    ) {
-      el.classList.remove("sprite-field__def");
-      el.classList.remove("sprite-field__question");
-      el.classList.add("sprite-field__mine");
-    } else if (el.classList.contains("sprite-field__flag")) {
-      el.classList.remove("sprite-field__flag");
-      el.classList.add("sprite-field__mine_defected");
-    }
-  }
-
-  smile.classList.remove("sprite-smile__def");
-  smile.classList.add("sprite-smile__lose");
-
-  clearInterval(timer);
-}
-
-//
-// GAME
-// GAME
-//
-
 function fillAroundBomb(i, j) {
   for (let k = i - 1; k < i + 2; k++) {
     for (let m = j - 1; m < j + 2; m++) {
@@ -267,7 +259,7 @@ function fillAroundBomb(i, j) {
   }
 }
 
-function fillField(bombs) {
+function fillField() {
   initField();
 
   for (let k = 0; k < 40; k++) {
@@ -356,7 +348,6 @@ function resetGame() {
   bombs = [];
   counter = 40;
   closedCells = 216;
-  timer = 0;
   stopTimer();
   resetTimer();
   drawTimer();
